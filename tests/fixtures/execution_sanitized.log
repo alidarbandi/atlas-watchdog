@@ -1,0 +1,7 @@
+09/09/2026	13:48:53.155	Info	Atlas 3D	Process started
+09/09/2026	13:50:53.155	Info	Atlas 3D	Process is alive. ImageNo=1; MillZ=0.0000 um
+09/09/2026	13:53:05.279	Info	Atlas 3D	Process is alive. ImageNo=2; MillZ=0.0325 um
+09/09/2026	13:53:06.000	Error	Imaging	The connection or the microscope does not respond.
+09/09/2026	13:53:07.000	Error	Imaging	Unable to recover. Stopping acquisition.
+09/09/2026	13:53:08.000	Info	Atlas 3D	Turning SEM EHT off
+09/09/2026	13:53:09.000	Info	Atlas 3D	Run Ended.

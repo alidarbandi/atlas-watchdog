@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.demo-state/
+.packaged-*-state/
+*.sqlite3*
+config.json*
+docs/dashboard.png
+docs/screenshot.png
+

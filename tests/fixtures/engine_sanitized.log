@@ -1,0 +1,5 @@
+Application log
+05/11/2026	10:57:06.524	Info	Application	Application was started: Atlas Engine v5.5.9.25 (x64)
+05/11/2026	10:57:08.293	Log	ASAP		communication failed: device may not be populated
+05/11/2026	11:00:00.000	Log	Imaging		WMAcqError WP=8 r=False
+05/11/2026	11:00:01.000	Info	Imaging		Failed to assign detector "InLens" to output 0

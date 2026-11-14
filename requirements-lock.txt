@@ -1,0 +1,25 @@
+# Tested Windows x64 CPython 3.12 environment, generated with uv pip freeze.
+# Install this file, then install the application with --no-deps -e .
+altgraph==0.17.5
+anyio==4.16.0
+certifi==2026.10.23
+colorama==0.4.6
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.20
+iniconfig==2.3.1
+packaging==26.3
+pefile==2023.2.7
+pluggy==1.7.0
+pyinstaller==6.16.0
+pyinstaller-hooks-contrib==2026.10
+pyside6==6.8.3
+pyside6-addons==6.8.3
+pyside6-essentials==6.8.3
+pytest==8.3.5
+pywin32-ctypes==0.2.3
+setuptools==84.2.1
+shiboken6==6.8.3
+typing-extensions==4.16.0
+tzdata==2025.2
