@@ -1,5 +1,7 @@
 # Windows compatibility and reproducible builds
 
+**Version 0.1.7 update:** The following Qt 6 baseline still applies to the modern profile. A separate Qt 5 / CPython 3.10 legacy candidate for Windows 10 1607 x64 now exists; see [its compatibility/build report](legacy-build.md). It is **UNVERIFIED ON THE TARGET OS**, with exact-target acceptance pending. The historical statement below that no legacy binary exists describes v0.1.6.
+
 The selected release target is **Windows 10 version 1809 (build 17763) or newer, x64**, including Windows 11 x64. This is a dependency support intersection, not a claim that every microscope workstation has passed application acceptance.
 
 | Component | Chosen version | Upstream baseline relevant here |

@@ -1,4 +1,7 @@
 .venv/
+.venv-legacy/
+.tools/
+.evidence/
 __pycache__/
 *.pyc
 .pytest_cache/

@@ -6,22 +6,41 @@ on:
 jobs:
   windows:
     runs-on: windows-2022
+    strategy:
+      matrix:
+        include:
+          - profile: modern
+            python: '3.12.13'
+            environment: .venv
+            lock: requirements-lock.txt
+          - profile: legacy
+            python: '3.10.11'
+            environment: .venv-legacy
+            lock: requirements-legacy-lock.txt
+    env:
+      ATLAS_WATCHDOG_PROFILE: ${{ matrix.profile }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python }}
           architecture: x64
       - name: Create reproducible environment
         shell: pwsh
         run: |
-          python -m venv .venv
-          .venv\Scripts\python.exe -m pip install -r requirements-lock.txt
-          .venv\Scripts\python.exe -m pip install --no-deps --no-build-isolation -e .
+          python -m venv ${{ matrix.environment }}
+          & '${{ matrix.environment }}\Scripts\python.exe' -m pip install -r ${{ matrix.lock }}
+          & '${{ matrix.environment }}\Scripts\python.exe' -m pip install --no-deps --no-build-isolation -e .
       - name: Test and build both formats
         shell: pwsh
-        run: .\scripts\build.ps1
+        run: .\scripts\build.ps1 -Profile ${{ matrix.profile }}
+      - name: Packaged demo verification (Server 2022, not target OS certification)
+        shell: pwsh
+        run: |
+          $artifact = if ('${{ matrix.profile }}' -eq 'legacy') { 'ATLASWatchdog-Win10-1607-x64' } else { 'ATLASWatchdog' }
+          .\scripts\test-candidate.ps1 -Executable "dist\v0.1.7\${{ matrix.profile }}\$artifact-debug\$artifact-debug.exe"
+          .\scripts\test-candidate.ps1 -Executable "dist\v0.1.7\${{ matrix.profile }}\$artifact.exe"
       - uses: actions/upload-artifact@v4
         with:
-          name: ATLASWatchdog-Windows-x64
+          name: ATLASWatchdog-Windows-x64-${{ matrix.profile }}
           path: dist/

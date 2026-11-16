@@ -11,10 +11,10 @@ from pathlib import Path
 from typing import Callable
 
 from . import __version__
-from PySide6.QtCore import QObject, QThread, QTimer, Signal, Slot, Qt, QLockFile
-from PySide6.QtGui import QAction, QColor, QFont, QIcon, QPainter, QPixmap
-from PySide6.QtNetwork import QLocalServer, QLocalSocket
-from PySide6.QtWidgets import (
+from .qt import QObject, QThread, QTimer, Signal, Slot, Qt, QLockFile
+from .qt import QAction, QColor, QFont, QIcon, QPainter, QPixmap
+from .qt import QLocalServer, QLocalSocket, exec_dialog, exec_application, configure_dpi
+from .qt import (
     QApplication, QAbstractItemView, QCheckBox, QComboBox, QDialog,
     QDialogButtonBox, QFileDialog, QFormLayout, QFrame, QGridLayout,
     QGroupBox, QHBoxLayout, QHeaderView, QInputDialog, QLabel, QLineEdit,
@@ -341,7 +341,9 @@ class MainWindow(QMainWindow):
 
     def __init__(self, controller_factory=None, state_dir=None, enable_tray=True):
         super().__init__()
-        self.setWindowTitle(f"ATLAS Watchdog {__version__}")
+        from .runtime import selected_profile
+        suffix = " - Windows 1607 legacy candidate" if selected_profile() == "legacy" else " - modern"
+        self.setWindowTitle(f"ATLAS Watchdog {__version__}{suffix}")
         self.setWindowIcon(icon())
         self.resize(1390, 900)
         self.config = {}
@@ -791,7 +793,7 @@ class MainWindow(QMainWindow):
         self.render_rules()
         self.update_nominal()
         if not self.loaded and config.get("geometry"):
-            from PySide6.QtCore import QByteArray
+            from .qt import QByteArray
             self.restoreGeometry(QByteArray.fromBase64(config["geometry"].encode("ascii")))
         self.loaded=True
 
@@ -841,7 +843,7 @@ class MainWindow(QMainWindow):
 
     def add_rule(self):
         dialog=RuleDialog(parent=self)
-        if dialog.exec()==QDialog.DialogCode.Accepted:
+        if exec_dialog(dialog)==QDialog.DialogCode.Accepted:
             self.config.setdefault("rules",{}).setdefault(self.rule_source.currentData(),[]).append(dialog.value())
             self.render_rules()
 
@@ -851,7 +853,7 @@ class MainWindow(QMainWindow):
         if index<0 or index>=len(rules):
             return
         dialog=RuleDialog(rules[index],self)
-        if dialog.exec()==QDialog.DialogCode.Accepted:
+        if exec_dialog(dialog)==QDialog.DialogCode.Accepted:
             rules[index]=dialog.value()
             self.render_rules()
 
@@ -991,7 +993,27 @@ class MainWindow(QMainWindow):
                 continue
             filtered.append(event)
         self.visible_events=filtered
-        self.table.blockSignals(True)
+        self.populate_events(filtered, selected_id)
+        self.show_details()
+
+    def populate_events(self, filtered, selected_id):
+        # Qt 5 recalculates ResizeToContents on each cell replacement, making a
+        # burst stall the event loop. Defer geometry/painting until the batch ends.
+        header = self.table.horizontalHeader()
+        modes = [header.sectionResizeMode(i) for i in range(self.table.columnCount())]
+        blocked = self.table.blockSignals(True)
+        updates = self.table.updatesEnabled()
+        self.table.setUpdatesEnabled(False)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        try:
+            self.populate_event_rows(filtered, selected_id)
+        finally:
+            for column, mode in enumerate(modes):
+                header.setSectionResizeMode(column, mode)
+            self.table.blockSignals(blocked)
+            self.table.setUpdatesEnabled(updates)
+
+    def populate_event_rows(self, filtered, selected_id):
         self.table.setRowCount(len(filtered))
         restore=-1
         for row,event in enumerate(filtered):
@@ -1010,8 +1032,6 @@ class MainWindow(QMainWindow):
             self.table.selectRow(restore)
         elif filtered:
             self.table.selectRow(0)
-        self.table.blockSignals(False)
-        self.show_details()
 
     @staticmethod
     def delivery_text(value):
@@ -1252,6 +1272,7 @@ class SingleInstance:
 
 
 def run(state_dir=None,demo=False,smoke_test=False,screenshot=None):
+    configure_dpi()
     app=QApplication.instance() or QApplication([])
     app.setApplicationName("ATLAS Watchdog")
     app.setOrganizationName("ATLASWatchdog")
@@ -1266,7 +1287,7 @@ def run(state_dir=None,demo=False,smoke_test=False,screenshot=None):
     window=MainWindow(state_dir=state_dir,enable_tray=not smoke_test)
     instance.connect_window(window)
     window.show()
-    if smoke_test:
+    if smoke_test and not demo:
         QTimer.singleShot(700,window.toggle_monitor)
         QTimer.singleShot(1200,window.toggle_monitor)
     if demo:
@@ -1284,9 +1305,17 @@ def run(state_dir=None,demo=False,smoke_test=False,screenshot=None):
             except (OSError,ValueError):
                 window.receive_result("screenshot",{"error":"Screenshot destination must be writable and outside monitored source / ATLAS directories."})
         QTimer.singleShot(7000 if smoke_test else 5000,capture)
+    smoke_ok = [not smoke_test]
     if smoke_test:
-        QTimer.singleShot(8000,window.quit_app)
+        def finish_smoke():
+            snapshot = window.current_snapshot
+            smoke_ok[0] = bool(window.loaded and not snapshot.get("degraded") and
+                               (not demo or (snapshot.get("demo") and
+                                any(e.get("source") == "execution" for e in window.events) and
+                                all(snapshot.get("live", {}).get(s) for s in ("engine", "execution")))))
+            window.quit_app()
+        QTimer.singleShot(10000,finish_smoke)
     app.aboutToQuit.connect(window.shutdown)
-    result=app.exec()
+    result=exec_application(app)
     instance.lock.unlock()
-    return result
+    return result if result else (0 if smoke_ok[0] else 1)

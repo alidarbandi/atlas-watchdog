@@ -1,0 +1,22 @@
+# Windows 1607 candidate acceptance
+
+Start with **disposable/demo sources and new state**, without any Gmail/Telegram credentials. **UNVERIFIED ON THE TARGET OS** until this record is actually completed on a licensed disposable test PC/VM. Do not run automated mutation tests against acquisition logs.
+
+1. Record edition, version, build **including revision**, x64 architecture, installed VC runtimes and whether Python/Qt are absent. The exact requested target is Enterprise 2016 LTSB, 1607, **14393.3884**. A different 14393 revision or Server 2016 must be recorded as a substitute. Do not silently update Windows or install runtimes.
+2. Extract the complete diagnostic archive to a normal user-writable folder. Open ordinary PowerShell (no elevation), and run `powershell -NoProfile -File .\check-windows.ps1 -Profile legacy -Executable .\ATLASWatchdog-Win10-1607-x64.exe`. Confirm x64 and compare the hash with `SHA256SUMS.txt`.
+3. Run both commands below, from the deliverable folder, with distinct fresh output paths. A successful result must show exit 0 and a database/diagnostic file. The application also checks initialized worker, both demo live views and execution events before exiting. Retain result.json, errors.txt and diagnostics locally; share only a reviewed/redacted copy.
+
+```powershell
+powershell -NoProfile -File .\test-candidate.ps1 -Executable .\ATLASWatchdog-Win10-1607-x64-debug\ATLASWatchdog-Win10-1607-x64-debug.exe
+powershell -NoProfile -File .\test-candidate.ps1 -Executable .\ATLASWatchdog-Win10-1607-x64.exe
+```
+
+4. Repeat in a folder containing spaces and non-ASCII characters, with fresh state. Check temporary extraction, repeat launch/restart, and no global Python/Qt dependency. Restricting PATH alone is not a clean-machine test. Do not elevate to fix a normal-user failure.
+5. Launch with `--demo --state-dir "C:\a separate writable test folder"`. Review General, Sources, Delivery, Rules, Events/history and diagnostics at 100%, 125%, 150% and 200% display scaling. Verify readable dialogs, rule add/edit/test, source selection, history/export and acknowledgments. Exercise demo pause/resume, rotation/truncation/burst, configured silence/activity rules, coverage/recovery messages and responsive controls during a bounded soak. Record its real duration and resource observations.
+6. Check minimize-to-tray, restore, Quit, restart, a second instance activating the first, and crash recovery with disposable state. Try both profiles against the same copied state only on an OS supporting both; they must not run against it concurrently.
+7. Test a **copy** of the existing workstation state: preserve configuration, credential references, history and checkpoints; monitoring/alerts must start off. Do not include that copy in a distributable bundle. Never modify source logs from the watchdog. Compare source hashes around read-only tests; use a separate writer for simulated append/partial-line/rotation cases.
+8. For failures before Qt opens, inspect `%LOCALAPPDATA%\ATLASWatchdog\startup.json` and diagnostic console output. If Python never starts, obtain the OS loader error and inspect the complete folder with a current trusted native dependency tool; identify an actual failing DLL/export. API-set names alone are not evidence of missing files. Do not replace system DLLs or download individual DLLs.
+9. Only after disposable acceptance, use the existing [workstation acceptance](acceptance.md) for brief read-only observation during an expendable authorized acquisition. Confirm ATLAS responsiveness, vendor sharing/rotation behavior, shutdown and coverage. Keep monitoring and alerts separately controlled.
+10. **Owner-controlled TEST sends only:** configure Gmail/Telegram deliberately, send a TEST to each intended recipient, verify email receipt/spam and phone sound/popup/DND. TEST success does not arm automatic alerts. Enable a channel, apply, then Start alerts only when intended. Record actual provider/phone results separately from automated mocks and acquisition acceptance.
+
+Acceptance record: date/time; OS edition/version/build/revision/architecture; runtime inventory; hashes; user privilege level; clean-machine status; both smoke results; display/tray/locking/state-copy results; soak duration; source sharing/acquisition; provider/phone results; remaining failures. Keep the binary marked unverified while the target gate remains pending.

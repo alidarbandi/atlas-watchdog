@@ -2,6 +2,8 @@
 
 A portable Windows desktop monitor for ZEISS/FIBICS ATLAS engine and execution logs. It detects configured faults and possible stalled activity, keeps local history, and can send Gmail and Telegram alerts. It never controls the microscope.
 
+Version **0.1.7** adds a separate **Windows 10 1607 x64 legacy candidate**, built with Python 3.10.11 / PySide2 5.15.2.1. **UNVERIFIED ON THE TARGET OS**: 14393.3884 acceptance remains pending. Local artifacts are in `dist/v0.1.7/legacy/`; this candidate has not replaced the public release. Read the [legacy build/compatibility report](docs/legacy-build.md), [new verification record](docs/legacy-verification.md) and [target acceptance steps](docs/legacy-acceptance.md). The modern Qt 6 profile retains its 1809 minimum. Source runs require `ATLAS_WATCHDOG_PROFILE=legacy` for the legacy environment; build with `scripts\build.ps1 -Profile legacy`.
+
 ## Download and run on a new PC
 
 Download **[ATLASWatchdog.exe](https://github.com/alidarbandi/atlas-watchdog/releases/latest/download/ATLASWatchdog.exe)** from the [latest release](https://github.com/alidarbandi/atlas-watchdog/releases/latest). Save it in a normal folder and double-click it. This is a single portable Windows x64 program; users do not need to install Python, Qt, Git, or a separate runtime. It has no installer and does not need administrator access for ordinary use. Windows 10 version 1809 or newer and Windows 11 x64 are the supported targets. The executable is unsigned, so follow your organization's normal software approval process.
@@ -22,10 +24,10 @@ Telegram is optional; see the [Telegram guide](docs/telegram.md). For full sourc
 The release executable requires no Python installation:
 
 ```powershell
-.\dist\ATLASWatchdog.exe
+.\dist\v0.1.7\modern\ATLASWatchdog.exe
 ```
 
-The diagnostic one-folder executable is in the optional `ATLASWatchdog-debug.zip` release asset; keep its extracted folder together. The portable release is the single windowed `ATLASWatchdog.exe` file. Durable state is under `%LOCALAPPDATA%\ATLASWatchdog`, independent of the executable's location. Do not place application output in an ATLAS or monitored-source directory.
+The modern diagnostic one-folder executable is in `dist/v0.1.7/modern/ATLASWatchdog-debug.zip`; keep its extracted folder together. The portable modern release is the single windowed `ATLASWatchdog.exe` file. The legacy counterparts are under `dist/v0.1.7/legacy/` with `-Win10-1607-x64` in their names. Durable state is under `%LOCALAPPDATA%\ATLASWatchdog`, independent of the executable's location and shared between profiles. Do not place application output in an ATLAS or monitored-source directory.
 
 For development, use x64 CPython 3.12. The pinned environment used here is Python 3.12.13, PySide6/Qt 6.8.3, HTTPX 0.28.1, pytest 8.3.5, and PyInstaller 6.16.0. [Compatibility](docs/compatibility.md) explains why this targets Windows 10 version 1809 or newer, x64, and what remains to verify on the microscope PC.
 

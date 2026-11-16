@@ -6,9 +6,11 @@ import time
 os.environ.setdefault("QT_QPA_PLATFORM","offscreen")
 
 import pytest
-from PySide6.QtCore import Qt
-from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QDialog, QLineEdit, QMessageBox
+from atlas_watchdog.qt import Qt, QApplication, QDialog, QLineEdit, QMessageBox, LEGACY
+if LEGACY:
+    from PySide2.QtTest import QTest
+else:
+    from PySide6.QtTest import QTest
 
 from atlas_watchdog.config import defaults
 from atlas_watchdog.controller import Controller
@@ -27,7 +29,7 @@ def until(app,predicate,timeout=4):
         app.processEvents()
         if predicate():
             return
-        QTest.qWait(10)
+        time.sleep(.01)  # The loop pumps events; Qt 5's QTest has no qWait.
     raise AssertionError("Qt condition not reached")
 
 

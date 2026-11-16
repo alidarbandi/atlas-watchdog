@@ -1,19 +1,19 @@
 [build-system]
-requires = ["setuptools>=75"]
+requires = ["setuptools>=75,<85"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "atlas-watchdog"
-version = "0.1.6"
+version = "0.1.7"
 description = "Observational ATLAS log monitor for Windows laboratories"
-requires-python = ">=3.12,<3.13"
-dependencies = ["PySide6==6.8.3", "httpx==0.28.1", "tzdata==2025.2"]
+requires-python = ">=3.10,<3.13,!=3.11.*"
+dependencies = ["PySide6==6.8.3; python_version == '3.12'", "PySide2==5.15.2.1; python_version == '3.10'", "shiboken2==5.15.2.1; python_version == '3.10'", "httpx==0.28.1", "tzdata==2025.2"]
 
 [project.optional-dependencies]
 dev = ["pytest==8.3.5", "PyInstaller==6.16.0"]
 
 [project.gui-scripts]
-atlas-watchdog = "atlas_watchdog.gui:run"
+atlas-watchdog = "atlas_watchdog.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
