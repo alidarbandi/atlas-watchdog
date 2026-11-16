@@ -58,7 +58,7 @@ def main(release_dir=None, profile="modern"):
             "This compatibility runtime uses old Python/Qt/OpenSSL versions; see docs/legacy-build.md.\n", encoding="utf-8")
     source_archive = release / "ATLASWatchdog-source.zip"
     allowed = ["src", "tests", "docs", "scripts", "packaging", ".github", "README.md",
-               "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "requirements-lock.txt", "requirements-legacy-lock.txt", ".gitignore"]
+               "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "requirements-lock.txt", "requirements-legacy-lock.txt", ".gitignore", ".gitattributes"]
     with ZipFile(source_archive, "w", compression=ZIP_DEFLATED) as archive:
         for item in allowed:
             candidate = root / item
