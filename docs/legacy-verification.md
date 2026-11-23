@@ -2,7 +2,13 @@
 
 The original verification record in `verification.md` describes earlier releases. New results for this rebuild are recorded here; they do not certify the instrument PC.
 
-Starting repository: `https://github.com/alidarbandi/atlas-watchdog`, commit `c64255213ba793e97412256dfcfd79ab0f51f510`. Local branch: `fix/windows-1607-compatibility`. Work began November 16, 2026 (America/Toronto). No push, merge or release publication is authorized or performed.
+Starting repository: `https://github.com/alidarbandi/atlas-watchdog`, commit `c64255213ba793e97412256dfcfd79ab0f51f510`. Local branch: `fix/windows-1607-compatibility`. Work began November 16, 2026 (America/Toronto); that initial delivery remained local. On November 23, the owner requested publication of the source and legacy downloads.
+
+## Owner confirmation — November 23, 2026
+
+The owner reported: **"This fixed the issue on legacy windows."** This confirms owner-reported startup/compatibility success for the previously delivered legacy executable on the ATLAS PC. The owner did not supply a new OS/build/runtime inventory, a detailed acquisition acceptance record or provider/phone delivery results. Preserve this distinction from independent exact-build certification.
+
+The originally delivered standalone legacy executable's SHA256 is `aac6b8220ff52e56128669cabcebfadef62b252ccd2bbd6bf1c69fa4d4fa1782`, built from application source at `c8961d81c1cca76727b61bdaa0a6f84dcf74d09b`. Public release binaries are rebuilt with the same application source and pinned profiles by the Windows workflow; their hashes are published in the release's `SHA256SUMS.txt`. A passing CI build on Windows Server 2022 does not independently repeat the owner's workstation test.
 
 **Target-OS validation PENDING: Windows 10 Enterprise 2016 LTSB 1607 build 14393.3884 has not been available.** No clean VM, Server 2016 substitute or instrument-PC test was performed. See `legacy-acceptance.md` for the concrete procedure.
 
@@ -63,7 +69,7 @@ Use each profile's interpreter and `ATLAS_WATCHDOG_PROFILE` as described in `leg
 2. **Windows executables: BUILT**, both formats/profiles.
 3. **Packaged build-host smoke: PASSED**, both formats/profiles, repeated launch.
 4. **Clean machine without Python/Qt: PENDING**, no disposable clean machine available.
-5. **Exact target / substitute OS: PENDING**, no licensed 1607 VM/test PC available. Build 19045 is not equivalent. Test the complete diagnostic folder and portable executable on licensed 14393.3884 x64; record any revision difference and installed runtimes.
+5. **Legacy workstation startup: OWNER-REPORTED SUCCESS (November 23)**. Independent exact-target/substitute OS certification remains **PENDING**; no licensed 1607 VM/test PC was available to the agent. Build 19045 and CI's Server 2022 are not equivalent. Record the actual destination revision and installed runtimes when completing acceptance.
 6. **Real microscope acquisition acceptance: PENDING**, instrument PC/logs not accessed.
 7. **Real provider/phone delivery: PENDING for this rebuild**, no Gmail/Telegram messages sent. Existing historical reports do not certify this build. Owner must deliberately run each TEST and confirm receipt.
 

@@ -42,14 +42,17 @@ def main(release_dir=None, profile="modern"):
     record = dict(profile=profile, python=platform.python_version(),
                   sqlite=sqlite3.sqlite_version, openssl=ssl.OPENSSL_VERSION,
                   target_os_validation="PENDING", dependencies=metadata)
+    if profile == "legacy":
+        record["owner_reported_startup"] = "2026-11-23: legacy build fixed startup on the ATLAS PC; independent exact-build certification remains pending"
     (release / "BUILD-DEPENDENCIES.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
     if profile == "legacy":
         (release / "UNVERIFIED-ON-TARGET-OS.txt").write_text(
-            "UNVERIFIED ON THE TARGET OS\nWindows 10 Enterprise 2016 LTSB 1607 build 14393.3884 x64 has NOT been tested.\n"
+            "INDEPENDENT EXACT-TARGET VALIDATION PENDING\nThe owner reported on 2026-11-23 that the legacy build fixed startup on the ATLAS PC.\n"
+            "The agent has not independently tested Windows 10 Enterprise 2016 LTSB 1607 build 14393.3884 x64.\n"
             "Run check-windows.ps1 -Profile legacy, then follow docs/legacy-acceptance.md on a disposable test PC.\n", encoding="utf-8")
         (release / "START-HERE.txt").write_text(
             "ATLAS Watchdog 0.1.7 - Windows 10 1607 x64 LEGACY CANDIDATE\n\n"
-            "UNVERIFIED ON THE TARGET OS (14393.3884).\n"
+            "Owner reported legacy Windows startup success on 2026-11-23. Independent exact-target validation remains pending.\n"
             "1. Confirm x64 using check-windows.ps1 -Profile legacy.\n"
             "2. Extract the complete debug ZIP and begin with the demo using new state; see docs/legacy-acceptance.md.\n"
             "3. The portable app is ATLASWatchdog-Win10-1607-x64.exe. Python/Qt installation is not required.\n"
@@ -57,7 +60,7 @@ def main(release_dir=None, profile="modern"):
             "Build-host tests passed; exact-target, clean-machine, real acquisition and real delivery checks remain pending.\n"
             "This compatibility runtime uses old Python/Qt/OpenSSL versions; see docs/legacy-build.md.\n", encoding="utf-8")
     source_archive = release / "ATLASWatchdog-source.zip"
-    allowed = ["src", "tests", "docs", "scripts", "packaging", ".github", "README.md",
+    allowed = ["src", "tests", "docs", "scripts", "packaging", ".github", "legacy", "README.md",
                "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "requirements-lock.txt", "requirements-legacy-lock.txt", ".gitignore", ".gitattributes"]
     with ZipFile(source_archive, "w", compression=ZIP_DEFLATED) as archive:
         for item in allowed:

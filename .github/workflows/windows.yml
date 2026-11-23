@@ -3,6 +3,13 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish v0.1.7 after both profiles pass (main only)
+        type: boolean
+        default: false
+permissions:
+  contents: read
 jobs:
   windows:
     runs-on: windows-2022
@@ -43,4 +50,43 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ATLASWatchdog-Windows-x64-${{ matrix.profile }}
-          path: dist/
+          path: dist/v0.1.7/${{ matrix.profile }}/
+  release:
+    name: Publish verified Windows downloads
+    needs: windows
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.publish == true)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-atlas-watchdog-v0.1.7
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ATLASWatchdog-Windows-x64-legacy
+          path: dist/v0.1.7/legacy
+      - uses: actions/download-artifact@v4
+        with:
+          name: ATLASWatchdog-Windows-x64-modern
+          path: dist/v0.1.7/modern
+      - name: Prepare source, standalone executables, legacy folder and checksums
+        run: python3 scripts/package_github_release.py --source-commit "$GITHUB_SHA"
+      - name: Publish v0.1.7 without replacing existing release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view v0.1.7 --json isDraft > release-state.json 2>/dev/null; then
+            if python3 -c 'import json; raise SystemExit(0 if json.load(open("release-state.json"))["isDraft"] else 1)'; then
+              echo 'An existing v0.1.7 draft needs review; no assets were overwritten.' >&2
+              exit 1
+            fi
+            echo 'v0.1.7 is already published; existing assets were preserved.'
+            exit 0
+          fi
+          gh release create v0.1.7 dist/github-v0.1.7/* \
+            --target "$GITHUB_SHA" --title 'ATLAS Watchdog v0.1.7 — legacy Windows compatibility' \
+            --notes-file docs/release-v0.1.7.md --draft
+          gh release edit v0.1.7 --draft=false --latest

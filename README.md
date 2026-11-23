@@ -2,7 +2,14 @@
 
 A portable Windows desktop monitor for ZEISS/FIBICS ATLAS engine and execution logs. It detects configured faults and possible stalled activity, keeps local history, and can send Gmail and Telegram alerts. It never controls the microscope.
 
-Version **0.1.7** adds a separate **Windows 10 1607 x64 legacy candidate**, built with Python 3.10.11 / PySide2 5.15.2.1. **UNVERIFIED ON THE TARGET OS**: 14393.3884 acceptance remains pending. Local artifacts are in `dist/v0.1.7/legacy/`; this candidate has not replaced the public release. Read the [legacy build/compatibility report](docs/legacy-build.md), [new verification record](docs/legacy-verification.md) and [target acceptance steps](docs/legacy-acceptance.md). The modern Qt 6 profile retains its 1809 minimum. Source runs require `ATLAS_WATCHDOG_PROFILE=legacy` for the legacy environment; build with `scripts\build.ps1 -Profile legacy`.
+Version **0.1.7** adds a separate **Windows 10 1607 x64 legacy build**, using Python 3.10.11 / PySide2 5.15.2.1. On November 23, 2026, the owner confirmed that the legacy build fixed the startup issue on the ATLAS PC. This is owner-reported startup success; independent exact-build, long acquisition and notification-delivery acceptance are recorded separately in the [verification report](docs/legacy-verification.md).
+
+| Windows PC | Standalone portable application | Optional complete folder |
+|---|---|---|
+| **Legacy Windows 10 1607 x64** | **[Download legacy EXE](https://github.com/alidarbandi/atlas-watchdog/releases/download/v0.1.7/ATLASWatchdog-Win10-1607-x64.exe)** | [Download legacy folder ZIP](https://github.com/alidarbandi/atlas-watchdog/releases/download/v0.1.7/ATLASWatchdog-v0.1.7-legacy.zip) |
+| Windows 10 1809+ / Windows 11 x64 | [Download modern EXE](https://github.com/alidarbandi/atlas-watchdog/releases/download/v0.1.7/ATLASWatchdog.exe) | [Download modern diagnostic folder ZIP](https://github.com/alidarbandi/atlas-watchdog/releases/download/v0.1.7/ATLASWatchdog-debug.zip) |
+
+The standalone executables include Python and Qt; no separate installation is needed. See the [legacy folder](legacy/), [v0.1.7 release](https://github.com/alidarbandi/atlas-watchdog/releases/tag/v0.1.7), [checksums](https://github.com/alidarbandi/atlas-watchdog/releases/download/v0.1.7/SHA256SUMS.txt), [legacy build instructions](docs/legacy-build.md) and [acceptance guide](docs/legacy-acceptance.md). The modern Qt 6 profile retains its 1809 minimum. Source runs require `ATLAS_WATCHDOG_PROFILE=legacy` for the legacy environment; build with `scripts\build.ps1 -Profile legacy`.
 
 ## Download and run on a new PC
 

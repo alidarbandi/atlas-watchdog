@@ -1,6 +1,6 @@
 # Reproduce the Windows 1607 candidate
 
-Version 0.1.7 has two isolated Windows x64 profiles. The legacy candidate is **UNVERIFIED ON THE TARGET OS** (Windows 10 Enterprise 2016 LTSB 1607, 14393.3884). Artifact naming and a passing preflight do not certify compatibility. See [verification](legacy-verification.md) and [acceptance](legacy-acceptance.md).
+Version 0.1.7 has two isolated Windows x64 profiles. On November 23, 2026, the owner reported that the legacy build fixed startup on the ATLAS PC. **Independent exact-target certification remains pending** for Windows 10 Enterprise 2016 LTSB 1607, 14393.3884; the owner did not provide a new OS inventory or complete acceptance record. Artifact naming and a passing preflight do not certify compatibility. See [verification](legacy-verification.md), [downloads](../legacy/) and [acceptance](legacy-acceptance.md).
 
 ## Build environments
 
